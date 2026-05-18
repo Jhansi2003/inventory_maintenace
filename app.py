@@ -325,15 +325,56 @@ elif page == "ML Prediction":
 
     with c1:
 
-        product = st.selectbox(
-            "Product",
-            encoders['product_name'].classes_
-        )
+       # =========================================================
+# CATEGORY -> PRODUCT MAPPING
+# =========================================================
 
-        category = st.selectbox(
-            "Category",
-            encoders['category'].classes_
-        )
+category_product_map = {
+
+    "Dairy": [
+        "Milk",
+        "Cheese",
+        "Butter",
+        "Curd",
+        "Paneer",
+        "Yogurt",
+        "Cream"
+    ],
+
+    "Frozen": [
+        "Frozen Peas",
+        "Ice Cream"
+    ],
+
+    "Meat": [
+        "Chicken",
+        "Fish"
+    ],
+
+    "Beverages": [
+        "Juice"
+    ]
+}
+
+# =========================================================
+# CATEGORY DROPDOWN
+# =========================================================
+
+category = st.selectbox(
+    "Category",
+    sorted(category_product_map.keys())
+)
+
+# =========================================================
+# PRODUCT DROPDOWN FILTERED BY CATEGORY
+# =========================================================
+
+filtered_products = category_product_map[category]
+
+product = st.selectbox(
+    "Product",
+    filtered_products
+)
 
     with c2:
 
