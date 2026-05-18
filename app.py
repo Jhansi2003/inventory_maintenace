@@ -339,30 +339,46 @@ elif page == "ML Prediction":
 
         category_product_map = {
 
-            "Dairy": [
-                "Milk",
-                "Cheese",
-                "Butter",
-                "Curd",
-                "Paneer",
-                "Yogurt",
-                "Cream"
-            ],
+    "Dairy": [
+        "Milk",
+        "Cheese",
+        "Butter",
+        "Curd",
+        "Paneer",
+        "Yogurt",
+        "Cream"
+    ],
 
-            "Frozen": [
-                "Frozen Peas",
-                "Ice Cream"
-            ],
+    "Frozen": [
+        "Frozen Peas",
+        "Ice Cream"
+    ],
 
-            "Meat": [
-                "Chicken",
-                "Fish"
-            ],
+    "Meat": [
+        "Chicken",
+        "Fish"
+    ],
 
-            "Beverages": [
-                "Juice"
-            ]
-        }
+    "Beverages": [
+        "Juice"
+    ],
+
+    "Fruits": [
+        "Apple",
+        "Banana",
+        "Orange",
+        "Mango",
+        "Grapes"
+    ],
+
+    "Vegetables": [
+        "Tomato",
+        "Potato",
+        "Onion",
+        "Carrot",
+        "Cabbage"
+    ]
+}
 
         # =================================================
         # CATEGORY DROPDOWN
