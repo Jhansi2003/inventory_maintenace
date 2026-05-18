@@ -303,6 +303,9 @@ if page == "Dashboard":
 # =========================================================
 # ML PREDICTION PAGE
 # =========================================================
+# =========================================================
+# ML PREDICTION PAGE
+# =========================================================
 elif page == "ML Prediction":
 
     st.title("ML Prediction Center")
@@ -311,6 +314,9 @@ elif page == "ML Prediction":
     spoil_model = joblib.load("spoilage_model.pkl")
     encoders = joblib.load("encoders.pkl")
 
+    # =====================================================
+    # SAFE ENCODER
+    # =====================================================
     def safe_encode(enc, val):
 
         return (
@@ -319,109 +325,117 @@ elif page == "ML Prediction":
             else 0
         )
 
-    st.markdown('<div class="section">', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="section">',
+        unsafe_allow_html=True
+    )
 
     c1, c2, c3 = st.columns(3)
 
+    # =====================================================
+    # CATEGORY + PRODUCT FILTERING
+    # =====================================================
     with c1:
 
-       # =========================================================
-# CATEGORY -> PRODUCT MAPPING
-# =========================================================
+        category_product_map = {
 
-category_product_map = {
+            "Dairy": [
+                "Milk",
+                "Cheese",
+                "Butter",
+                "Curd",
+                "Paneer",
+                "Yogurt",
+                "Cream"
+            ],
 
-    "Dairy": [
-        "Milk",
-        "Cheese",
-        "Butter",
-        "Curd",
-        "Paneer",
-        "Yogurt",
-        "Cream"
-    ],
+            "Frozen": [
+                "Frozen Peas",
+                "Ice Cream"
+            ],
 
-    "Frozen": [
-        "Frozen Peas",
-        "Ice Cream"
-    ],
+            "Meat": [
+                "Chicken",
+                "Fish"
+            ],
 
-    "Meat": [
-        "Chicken",
-        "Fish"
-    ],
+            "Beverages": [
+                "Juice"
+            ]
+        }
 
-    "Beverages": [
-        "Juice"
-    ]
-}
+        # =================================================
+        # CATEGORY DROPDOWN
+        # =================================================
+        category = st.selectbox(
+            "Category",
+            sorted(category_product_map.keys())
+        )
 
-# =========================================================
-# CATEGORY DROPDOWN
-# =========================================================
+        # =================================================
+        # FILTER PRODUCTS BASED ON CATEGORY
+        # =================================================
+        filtered_products = (
+            category_product_map[category]
+        )
 
-category = st.selectbox(
-    "Category",
-    sorted(category_product_map.keys())
-)
+        product = st.selectbox(
+            "Product",
+            filtered_products
+        )
 
-# =========================================================
-# PRODUCT DROPDOWN FILTERED BY CATEGORY
-# =========================================================
-
-filtered_products = category_product_map[category]
-
-product = st.selectbox(
-    "Product",
-    filtered_products
-)
-
+    # =====================================================
+    # INPUTS
+    # =====================================================
     with c2:
 
         quantity = st.number_input(
             "Quantity Ordered (KG)",
-            10,
-            5000,
-            100
+            min_value=10,
+            max_value=5000,
+            value=100
         )
 
         temperature = st.slider(
             "Temperature (°C)",
-            0,
-            50,
-            25
+            min_value=0,
+            max_value=50,
+            value=25
         )
 
         humidity = st.slider(
             "Humidity (%)",
-            10,
-            100,
-            60
+            min_value=10,
+            max_value=100,
+            value=60
         )
 
     with c3:
 
         unit_cost = st.number_input(
             "Unit Cost (₹)",
-            1,
-            1000,
-            50
+            min_value=1,
+            max_value=1000,
+            value=50
         )
 
         storage_capacity = st.number_input(
             "Storage Capacity (KG)",
-            100,
-            10000,
-            2000
+            min_value=100,
+            max_value=10000,
+            value=2000
         )
 
         shelf_life = st.number_input(
             "Shelf Life (Days)",
-            1,
-            60,
-            7
+            min_value=1,
+            max_value=60,
+            value=7
         )
 
+    # =====================================================
+    # MODEL INPUT
+    # =====================================================
     today = pd.Timestamp.today()
 
     input_data = pd.DataFrame([{
@@ -459,36 +473,70 @@ product = st.selectbox(
         "month": today.month
     }])
 
+    # =====================================================
+    # COLUMN ORDER IMPORTANT
+    # =====================================================
     input_data = input_data[[
+
         'warehouse_id',
+
         'product_id',
+
         'category',
+
         'supplier_id',
+
         'quantity_ordered_kg',
+
         'unit_cost_inr',
+
         'shelf_life_days',
+
         'temperature_celsius',
+
         'humidity_percent',
+
         'storage_capacity_kg',
+
         'day_of_week',
+
         'month'
     ]]
 
+    # =====================================================
+    # PREDICTION BUTTON
+    # =====================================================
     if st.button("Predict"):
 
-        demand = demand_model.predict(input_data)[0]
-        spoil = spoil_model.predict(input_data)[0]
+        demand = demand_model.predict(
+            input_data
+        )[0]
+
+        spoil = spoil_model.predict(
+            input_data
+        )[0]
 
         st.success(
-            f"Predicted Demand: {int(demand)} KG"
+            f"Predicted Demand: "
+            f"{int(demand)} KG"
         )
 
         if spoil == 1:
-            st.error("⚠️ High Spoilage Risk")
-        else:
-            st.success("✅ Low Spoilage Risk")
 
-    st.markdown('</div>', unsafe_allow_html=True)
+            st.error(
+                "⚠️ High Spoilage Risk"
+            )
+
+        else:
+
+            st.success(
+                "✅ Low Spoilage Risk"
+            )
+
+    st.markdown(
+        '</div>',
+        unsafe_allow_html=True
+    )
 
 # =========================================================
 # RECOMMENDATIONS PAGE
