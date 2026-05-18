@@ -104,8 +104,7 @@ print("⚠️ Spoilage Model Accuracy:", accuracy_score(y_test, pred_spoil))
 # =========================================================
 # SAVE MODELS (COMPRESSED PROPERLY)
 # =========================================================
-joblib.dump(demand_model, "demand_model.pkl", compress=5)
-joblib.dump(spoil_model, "spoilage_model.pkl", compress=5)
-joblib.dump(encoders, "encoders.pkl", compress=3)
-
+joblib.dump(demand_model, "demand_model.pkl")
+joblib.dump(spoil_model, "spoilage_model.pkl")
+joblib.dump(encoders, "encoders.pkl")
 print("\n✅ Models saved successfully (compressed!)")
